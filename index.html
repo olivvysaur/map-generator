@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <title>M.A.P. Generator</title>
+  </head>
+  <body>
+    <div id="root">
+      <h1>M.A.P. Generator</h1>
+
+      <div id="display">
+        <canvas id="canvas"></canvas>
+        <span id="seed-display" class="hidden">Seed: None</span>
+      </div>
+
+      <button id="generate-button" type="button">Generate</button>
+
+      <div id="settings">
+        <h2>Settings</h2>
+        <div id="dimensions">
+          <fieldset id="dimensions-fields">
+            <legend>Dimensions</legend>
+            <div class="form-element">
+              <label for="width">Width</label>
+              <input type="text" id="width" name="width" placeholder="300" />
+              <span class="direction">w</span>
+            </div>
+
+            <span class="separator">×</span>
+
+            <div class="form-element">
+              <label for="height">Height</label>
+              <input type="text" id="height" name="height" placeholder="200" />
+              <span class="direction">h</span>
+            </div>
+          </fieldset>
+        </div>
+
+        <div id="seed">
+          <div class="form-element">
+            <label for="seed-input">Seed</label>
+            <input type="text" id="seed-input" name="seed-input" />
+            <span id="seed-help">Leave blank for random seed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
