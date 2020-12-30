@@ -16,19 +16,23 @@
 #display {
   width: 100%;
   margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#seed-display {
+#meta {
   font-size: 0.8em;
+  margin-top: 8px;
+  display: flex;
 }
 
-#seed-display.hidden {
+#meta .hidden {
   color: white;
 }
 
-#canvas {
-  border: 2px solid grey;
-  width: 100%;
+.horizontal-spacer {
+  width: 24px;
 }
 
 #generate-button {
