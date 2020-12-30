@@ -36,6 +36,10 @@
   display: none;
 }
 
+#meta .hidden {
+  display: none;
+}
+
 .horizontal-spacer {
   width: 24px;
 }

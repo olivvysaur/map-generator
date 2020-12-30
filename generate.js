@@ -15,6 +15,7 @@ let dx;
 let dy;
 
 let visitedSpots = [];
+let riverSpots = [];
 
 function getSettingsFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -100,14 +101,24 @@ function generate() {
   while (x >= 0 && x < width && y >= 0 && y < height) {
     doStep();
   }
+
+  canvas.onclick = function (event) {
+    const { left: canvasLeft, top: canvasTop } = canvas.getBoundingClientRect();
+    const { clientX: clickX, clientY: clickY } = event;
+
+    const startX = Math.floor((clickX - canvasLeft) / stitchSize);
+    const startY = Math.floor((clickY - canvasTop) / stitchSize);
+
+    addRiver(startX, startY);
+  };
 }
 
-function doStep() {
+function doStep({ river } = { river: false }) {
   const d4 = Math.floor(random() * 4) + 1;
   const d8 = Math.floor(random() * 8) + 1;
   const coin = random() < 0.5 ? -1 : 1;
 
-  if (d4 === 1 && d8 === 1) {
+  if (d4 === 1 && d8 === 1 && !river) {
     doTurn(coin);
   }
 
@@ -117,12 +128,12 @@ function doStep() {
   } else {
     x += coin;
   }
-  addStitch();
+  addStitch({ river });
 
   for (let i = 0; i < d4; i++) {
     x += dx;
     y += dy;
-    addStitch();
+    addStitch({ river });
   }
 }
 
@@ -168,6 +179,46 @@ function doTurn(coin) {
   }
 }
 
+function addRiver(startX, startY) {
+  removeRiver();
+  x = startX;
+  y = startY;
+
+  document.getElementById('remove-river').classList.remove('hidden');
+
+  if (random() < 0.5) {
+    dx = random() < 0.5 ? 1 : -1;
+    dy = 0;
+  } else {
+    dy = random() < 0.5 ? 1 : -1;
+    dx = 0;
+  }
+
+  const riverSegments = Math.floor(random() * 25) + 15;
+  for (let i = 0; i < riverSegments; i++) {
+    doStep({ river: true });
+  }
+}
+
+function removeRiver() {
+  for (let i = 0; i < riverSpots.length; i++) {
+    const spot = riverSpots[i];
+    const isCoastline = visitedSpots.some(
+      (visitedSpot) => visitedSpot.x === spot.x && visitedSpot.y === spot.y
+    );
+    ctx.fillStyle = isCoastline ? '#0e82e8' : '#ffffff';
+    ctx.fillRect(
+      spot.x * stitchSize,
+      spot.y * stitchSize,
+      stitchSize,
+      stitchSize
+    );
+  }
+
+  riverSpots = [];
+  document.getElementById('remove-river').classList.add('hidden');
+}
+
 function updateSeedDisplay() {
   const seedDisplay = document.getElementById('seed-display');
   seedDisplay.innerText = `Seed: ${seed}`;
@@ -204,10 +255,14 @@ function drawBorder() {
   ctx.strokeRect(0, 0, width * stitchSize, height * stitchSize);
 }
 
-function addStitch() {
-  ctx.fillStyle = '#0e82e8';
+function addStitch({ river } = { river: false }) {
+  ctx.fillStyle = river ? '#51b6ed' : '#0e82e8';
   ctx.fillRect(x * stitchSize, y * stitchSize, stitchSize, stitchSize);
-  visitedSpots.push({ x, y });
+  if (river) {
+    riverSpots.push({ x, y });
+  } else {
+    visitedSpots.push({ x, y });
+  }
 }
 
 function drawStartPosition() {
