@@ -1,3 +1,4 @@
+let seed;
 let random;
 
 let canvas;
@@ -31,6 +32,19 @@ function getSettingsFromUrl() {
   }
 }
 
+function copyUrl() {
+  const { protocol, hostname } = window.location;
+  const url = `${protocol}//${hostname}/?w=${width - 1}&h=${
+    height - 1
+  }&seed=${seed}`;
+  navigator.clipboard.writeText(url).then(
+    function () {},
+    function () {
+      alert(`Failed to copy to the clipboard. The URL is: ${url}`);
+    }
+  );
+}
+
 function generate() {
   visitedSpots = [];
 
@@ -53,9 +67,9 @@ function generate() {
 
   const userSeed = document.getElementById('seed-input').value;
   const timeSeed = new Date().getTime().toString(36);
-  const seed = userSeed || timeSeed;
-  updateSeedDisplay(seed);
+  seed = userSeed || timeSeed;
   random = new Math.seedrandom(seed);
+  updateSeedDisplay();
 
   drawBorder();
 
@@ -152,7 +166,7 @@ function doTurn(coin) {
   }
 }
 
-function updateSeedDisplay(seed) {
+function updateSeedDisplay() {
   const seedDisplay = document.getElementById('seed-display');
   seedDisplay.innerText = `Seed: ${seed}`;
   seedDisplay.classList.remove('hidden');
