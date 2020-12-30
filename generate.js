@@ -71,6 +71,8 @@ function generate() {
   random = new Math.seedrandom(seed);
   updateSeedDisplay();
 
+  document.getElementById('meta').classList.remove('hidden');
+
   drawBorder();
 
   const { startX, startY } = chooseStartPosition();
@@ -169,7 +171,6 @@ function doTurn(coin) {
 function updateSeedDisplay() {
   const seedDisplay = document.getElementById('seed-display');
   seedDisplay.innerText = `Seed: ${seed}`;
-  seedDisplay.classList.remove('hidden');
 }
 
 function chooseStartPosition() {
@@ -196,7 +197,6 @@ function chooseStartPosition() {
 function displayStartPosition() {
   const startPositionDisplay = document.getElementById('start-position');
   startPositionDisplay.innerText = `Start position: (${x + 1}, ${y + 1})`;
-  startPositionDisplay.classList.remove('hidden');
 }
 
 function drawBorder() {

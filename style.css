@@ -32,8 +32,8 @@
   align-items: center;
 }
 
-#meta .hidden {
-  color: white;
+#meta.hidden {
+  display: none;
 }
 
 .horizontal-spacer {
