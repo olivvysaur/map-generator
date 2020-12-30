@@ -21,6 +21,10 @@
   align-items: center;
 }
 
+#canvas.hidden {
+  display: none;
+}
+
 #meta {
   font-size: 0.8em;
   margin-top: 8px;

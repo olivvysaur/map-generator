@@ -10,8 +10,14 @@ let stitchSize;
 
 let x;
 let y;
+let dx;
+let dy;
+
+let visitedSpots = [];
 
 function generate() {
+  visitedSpots = [];
+
   const enteredWidth = parseInt(document.getElementById('width').value);
   const enteredHeight = parseInt(document.getElementById('height').value);
 
@@ -21,6 +27,7 @@ function generate() {
     !enteredHeight || isNaN(enteredHeight) ? 200 : Math.abs(enteredHeight) + 1;
 
   canvas = document.getElementById('canvas');
+  canvas.classList.remove('hidden');
 
   stitchSize = calculateStitchSize();
   canvas.width = width * stitchSize;
@@ -41,9 +48,92 @@ function generate() {
   y = startY;
 
   displayStartPosition();
-  drawStitch();
+  addStitch();
 
-  printState();
+  if (y === 0) {
+    dx = 0;
+    dy = 1;
+  } else {
+    dx = 0;
+    dy = -1;
+  }
+
+  // Draw initial 4 stitches
+  for (let i = 0; i < 5; i++) {
+    x += dx;
+    y += dy;
+    addStitch();
+  }
+
+  while (x >= 0 && x < width && y >= 0 && y < height) {
+    doStep();
+  }
+}
+
+function doStep() {
+  const d4 = Math.floor(random() * 4) + 1;
+  const d8 = Math.floor(random() * 8) + 1;
+  const coin = random() < 0.5 ? -1 : 1;
+
+  if (d4 === 1 && d8 === 1) {
+    doTurn(coin);
+  }
+
+  // Drift based on coin
+  if (dx !== 0) {
+    y += coin;
+  } else {
+    x += coin;
+  }
+  addStitch();
+
+  for (let i = 0; i < d4; i++) {
+    x += dx;
+    y += dy;
+    addStitch();
+  }
+}
+
+function doTurn(coin) {
+  if (dx !== 0) {
+    dx = 0;
+    dy = coin;
+
+    let tempX = x;
+    let tempY = y;
+    for (let i = 0; i < 25; i++) {
+      tempY += dy;
+
+      const crossesPath = visitedSpots.some(
+        (spot) => spot.x === tempX && spot.y === tempY
+      );
+      const reachesEdge = tempY < 0 || tempY >= height;
+
+      if (crossesPath || reachesEdge) {
+        dy = -coin;
+        break;
+      }
+    }
+  } else {
+    dx = coin;
+    dy = 0;
+
+    let tempX = x;
+    let tempY = y;
+    for (let i = 0; i < 25; i++) {
+      tempX += dx;
+
+      const crossesPath = visitedSpots.some(
+        (spot) => spot.x === tempX && spot.y === tempY
+      );
+      const reachesEdge = tempY < 0 || tempY >= height;
+
+      if (crossesPath || reachesEdge) {
+        dx = -coin;
+        break;
+      }
+    }
+  }
 }
 
 function updateSeedDisplay(seed) {
@@ -84,9 +174,10 @@ function drawBorder() {
   ctx.strokeRect(0, 0, width * stitchSize, height * stitchSize);
 }
 
-function drawStitch() {
+function addStitch() {
   ctx.fillStyle = '#0e82e8';
   ctx.fillRect(x * stitchSize, y * stitchSize, stitchSize, stitchSize);
+  visitedSpots.push({ x, y });
 }
 
 function drawStartPosition() {
