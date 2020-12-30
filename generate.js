@@ -27,6 +27,7 @@ function getSettingsFromUrl() {
 
   if (w || h || seed) {
     generate();
+    document.getElementById('seed-input').value = '';
   }
 }
 
