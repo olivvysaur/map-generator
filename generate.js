@@ -15,6 +15,21 @@ let dy;
 
 let visitedSpots = [];
 
+function getSettingsFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const w = urlParams.get('w');
+  const h = urlParams.get('h');
+  const seed = urlParams.get('seed');
+
+  document.getElementById('width').value = w;
+  document.getElementById('height').value = h;
+  document.getElementById('seed-input').value = seed;
+
+  if (w || h || seed) {
+    generate();
+  }
+}
+
 function generate() {
   visitedSpots = [];
 
@@ -101,7 +116,7 @@ function doTurn(coin) {
 
     let tempX = x;
     let tempY = y;
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < height / 3; i++) {
       tempY += dy;
 
       const crossesPath = visitedSpots.some(
@@ -120,7 +135,7 @@ function doTurn(coin) {
 
     let tempX = x;
     let tempY = y;
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < width / 3; i++) {
       tempX += dx;
 
       const crossesPath = visitedSpots.some(
